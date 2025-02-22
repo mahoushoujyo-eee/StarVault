@@ -9,7 +9,7 @@
         <result property="avatar" column="avatar"/>
     </resultMap>
 
-    <insert id="addUser">
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user (username, password, email, avatar)
         VALUES (#{username}, #{password}, #{email}, #{avatar})
     </insert>

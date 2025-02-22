@@ -1,5 +1,6 @@
 package org.example.starvault.controller;
 
+import io.minio.errors.*;
 import org.example.starvault.entities.User;
 import org.example.starvault.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import stark.dataworks.boot.autoconfig.web.LogArgumentsAndResponse;
 import stark.dataworks.boot.web.ServiceResponse;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @LogArgumentsAndResponse
 @RestController
@@ -23,10 +28,9 @@ public class UserController
     }
 
     @PostMapping("/user/register")
-    public ServiceResponse<Boolean> register(@RequestBody User user)
+    public ServiceResponse<Boolean> register(@RequestBody User user) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
     {
-        userService.addUser(user);
-        return ServiceResponse.buildSuccessResponse(true);
+        return userService.addUser(user);
     }
 
     @PostMapping("/user/reset-password")

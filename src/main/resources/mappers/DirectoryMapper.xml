@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.example.starvault.mapper.DirectoryMapper" >
+<mapper namespace="org.example.starvault.mapper.DirectoryMapper">
+    <insert id="createDirectory">
+        INSERT INTO directory
+        (name, parent_id, user_id)
+        SELECT #{name}, id, #{userId}
+        FROM directory
+        WHERE name = #{parentName}
+        AND user_id = #{userId}
+    </insert>
+    <insert id="initializeUserDirectory">
+        INSERT INTO directory (name, parent_id, user_id)
+        VALUES (#{name}, #{parentId}, #{userId})
+    </insert>
+    <select id="ifContainsDirectory" resultType="java.lang.Boolean">
+        SELECT COUNT(*) > 0
+        FROM directory
+        WHERE name = #{name}
+        AND parent_id = (SELECT id FROM directory WHERE name = #{parentName} AND user_id = #{userId})
+    </select>
 </mapper>

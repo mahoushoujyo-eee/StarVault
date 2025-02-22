@@ -1,4 +1,12 @@
 package org.example.starvault.params;
 
-public class DirectoryParam {
+import lombok.Data;
+
+@Data
+public class DirectoryParam
+{
+    private Long id;
+    private String name;
+    private String parentName;
+    private Long userId;
 }
