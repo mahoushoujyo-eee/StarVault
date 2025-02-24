@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stark.dataworks.boot.autoconfig.minio.EasyMinio;
-import stark.dataworks.boot.autoconfig.minio.EasyMinioProperties;
 import stark.dataworks.boot.web.ServiceResponse;
 
 import java.io.IOException;
