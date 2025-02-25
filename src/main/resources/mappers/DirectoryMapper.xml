@@ -19,6 +19,12 @@
         INSERT INTO directory (name, parent_id, user_id)
         VALUES (#{name}, #{parentId}, #{userId})
     </insert>
+    <delete id="deleteDirectory">
+        DELETE FROM directory
+        WHERE user_id = #{userId}
+        AND name = #{name}
+        AND parent_id = (SELECT id FROM directory WHERE name = #{parentName} AND user_id = #{userId})
+    </delete>
     <select id="ifContainsDirectory" resultType="java.lang.Boolean">
         SELECT COUNT(*) > 0
         FROM directory

@@ -6,6 +6,7 @@ import org.example.starvault.mapper.DirectoryMapper;
 import org.example.starvault.params.DirectoryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import stark.dataworks.boot.web.ServiceResponse;
 
 import java.util.List;
@@ -36,16 +37,20 @@ public class DirectoryService
     }
 
     /**
-     * 初始化一个登入进网盘的用户目录
-     * @param  userId Long
-     * @return ServiceResponse<List<Directory>>
+     * 获取用户目录
+     * @param  directory DirectoryParam
+     * @return List<Directory>
      */
-    public ServiceResponse<List<Directory>> getUserRootDirectory(Long userId)
+    public ServiceResponse<List<Directory>> getUserRootDirectory(DirectoryParam directory)
     {
-        DirectoryParam directory = new DirectoryParam();
-        directory.setUserId(userId);
-        directory.setParentName("总目录");
         List<Directory> directories = directoryMapper.getDirectoriesByUserId(directory);
         return ServiceResponse.buildSuccessResponse(directories);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ServiceResponse<Boolean> deleteDirectory(DirectoryParam directory)
+    {
+        directoryMapper.deleteDirectory(directory);
+        return ServiceResponse.buildSuccessResponse(true);
     }
 }

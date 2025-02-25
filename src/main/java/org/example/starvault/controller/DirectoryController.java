@@ -26,9 +26,15 @@ public class DirectoryController
     }
 
     // initializeUserDirectory
-    @GetMapping("/initialize/{id}")
-    public ServiceResponse<List<Directory>> getUserRootDirectory(@PathVariable("id")String userId)
+    @PostMapping("/initialize")
+    public ServiceResponse<List<Directory>> getUserRootDirectory(@RequestBody DirectoryParam directory)
     {
-        return directoryService.getUserRootDirectory(Long.parseLong(userId));
+        return directoryService.getUserRootDirectory(directory);
+    }
+
+    @PostMapping("/delete")
+    public ServiceResponse<Boolean> deleteDirectory(@RequestBody DirectoryParam directory)
+    {
+        return directoryService.deleteDirectory(directory);
     }
 }

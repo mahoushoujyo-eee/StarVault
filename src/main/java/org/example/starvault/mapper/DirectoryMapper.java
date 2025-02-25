@@ -16,4 +16,6 @@ public interface DirectoryMapper
     public boolean ifContainsDirectory(DirectoryParam directory);
 
     public List<Directory> getDirectoriesByUserId(DirectoryParam directory);
+
+    void deleteDirectory(DirectoryParam directory);
 }
