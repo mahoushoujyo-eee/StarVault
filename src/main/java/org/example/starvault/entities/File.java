@@ -19,7 +19,7 @@ public class File
    @Column(type = "VARCHAR(50)")
    private String name;
 
-   @Column(type = "VARCHAR(100)")
+   @Column(type = "VARCHAR(1000)")
    private String url;
 
    @Column(type = "BIGINT")

@@ -17,7 +17,7 @@ public class SchemaSnapshot extends SchemaSnapshotBase {
         schemaBuilder.table("file", builder -> {
             builder.column().name("id").type("BIGINT").nullable(false).unique(false).autoIncrement(1);
             builder.column().name("name").type("VARCHAR(50)").nullable(true).unique(false);
-            builder.column().name("url").type("VARCHAR(100)").nullable(true).unique(false);
+            builder.column().name("url").type("VARCHAR(1000)").nullable(true).unique(false);
             builder.column().name("directory_id").type("BIGINT").nullable(true).unique(false);
             builder.column().name("user_id").type("BIGINT").nullable(true).unique(false);
             builder.primaryKey().columnName("id");

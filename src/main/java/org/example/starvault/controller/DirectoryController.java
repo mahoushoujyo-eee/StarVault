@@ -1,6 +1,7 @@
 package org.example.starvault.controller;
 
 import org.example.starvault.entities.Directory;
+import org.example.starvault.params.DirectoryAndFileParam;
 import org.example.starvault.params.DirectoryParam;
 import org.example.starvault.service.DirectoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class DirectoryController
     DirectoryService directoryService;
 
     @PostMapping("/create")
-    public ServiceResponse<Boolean> createDirectory(@RequestBody DirectoryParam directory)
+    public ServiceResponse<DirectoryParam> createDirectory(@RequestBody DirectoryParam directory)
     {
         System.out.println(directory);
         return directoryService.createDirectory(directory);
@@ -27,14 +28,26 @@ public class DirectoryController
 
     // initializeUserDirectory
     @PostMapping("/initialize")
-    public ServiceResponse<List<Directory>> getUserRootDirectory(@RequestBody DirectoryParam directory)
+    public ServiceResponse<List<DirectoryAndFileParam>> getUserDirectory(@RequestBody DirectoryParam directory)
     {
-        return directoryService.getUserRootDirectory(directory);
+        return directoryService.getUserDirectory(directory);
+    }
+
+    @GetMapping("/root/{id}")
+    public ServiceResponse<Directory> getRootDirectory(@PathVariable("id") Long userId)
+    {
+        return directoryService.getRootDirectory(userId);
     }
 
     @PostMapping("/delete")
     public ServiceResponse<Boolean> deleteDirectory(@RequestBody DirectoryParam directory)
     {
         return directoryService.deleteDirectory(directory);
+    }
+
+    @PostMapping("/rename")
+    public ServiceResponse<Boolean> renameDirectory(@RequestBody DirectoryParam directory)
+    {
+        return directoryService.renameDirectory(directory);
     }
 }

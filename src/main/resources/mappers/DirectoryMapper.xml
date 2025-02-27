@@ -7,7 +7,7 @@
         <result property="parentId" column="parent_id"/>
         <result property="userId" column="user_id"/>
     </resultMap>
-    <insert id="createDirectory">
+    <insert id="createDirectory"  useGeneratedKeys="true" keyProperty="id">
         INSERT INTO directory
         (name, parent_id, user_id)
         SELECT #{name}, id, #{userId}
@@ -19,23 +19,31 @@
         INSERT INTO directory (name, parent_id, user_id)
         VALUES (#{name}, #{parentId}, #{userId})
     </insert>
+    <update id="renameDirectory">
+        UPDATE directory
+        SET name = #{name}
+        WHERE id = #{id}
+    </update>
     <delete id="deleteDirectory">
         DELETE FROM directory
-        WHERE user_id = #{userId}
-        AND name = #{name}
-        AND parent_id = (SELECT id FROM directory WHERE name = #{parentName} AND user_id = #{userId})
+        WHERE id = #{id}
     </delete>
     <select id="ifContainsDirectory" resultType="java.lang.Boolean">
         SELECT COUNT(*) > 0
         FROM directory
-        WHERE name = #{name}
-        AND parent_id = (SELECT id FROM directory WHERE name = #{parentName} AND user_id = #{userId})
+        WHERE id = #{id}
     </select>
 
-    <select id="getDirectoriesByUserId" resultType="org.example.starvault.entities.Directory">
+    <select id="getDirectoriesByUserId" resultType="org.example.starvault.params.DirectoryAndFileParam">
         SELECT id, name, parent_id, user_id
         FROM directory
         WHERE user_id = #{userId}
-        AND parent_id = (SELECT id FROM directory WHERE name = #{parentName} AND user_id = #{userId})
+        AND parent_id = #{parentId}
+    </select>
+    <select id="getRootDirectory" resultType="org.example.starvault.entities.Directory">
+        SELECT id, name, parent_id, user_id
+        FROM directory
+        WHERE user_id = #{userId}
+        AND parent_id = -1
     </select>
 </mapper>
