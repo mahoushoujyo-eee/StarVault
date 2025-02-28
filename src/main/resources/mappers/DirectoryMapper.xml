@@ -10,10 +10,7 @@
     <insert id="createDirectory"  useGeneratedKeys="true" keyProperty="id">
         INSERT INTO directory
         (name, parent_id, user_id)
-        SELECT #{name}, id, #{userId}
-        FROM directory
-        WHERE name = #{parentName}
-        AND user_id = #{userId}
+        VALUES (#{name}, #{parentId}, #{userId})
     </insert>
     <insert id="initializeUserDirectory">
         INSERT INTO directory (name, parent_id, user_id)

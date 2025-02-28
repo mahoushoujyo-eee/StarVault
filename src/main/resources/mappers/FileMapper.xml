@@ -13,6 +13,10 @@
         INSERT INTO file (name, url,  user_id, directory_id)
         VALUES (#{name}, #{url}, #{userId}, #{directoryId})
     </insert>
+    <delete id="deleteFile">
+        DELETE FROM file
+        WHERE id = #{id}
+    </delete>
     <select id="getFilesByDirectoryId" resultMap="fileAndDirectoryMap">
         SELECT id, name, url, directory_id, user_id
         FROM file

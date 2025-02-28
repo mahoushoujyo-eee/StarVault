@@ -38,4 +38,10 @@ public class FileController
         fileService.addFile(fileObj);
         return ServiceResponse.buildSuccessResponse(fileObj);
     }
+
+    @PostMapping("delete")
+    public ServiceResponse<Boolean> deleteFile(@RequestBody File file) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
+    {
+        return fileService.deleteFile(file);
+    }
 }

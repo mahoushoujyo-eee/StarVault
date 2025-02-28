@@ -22,7 +22,6 @@ public class DirectoryController
     @PostMapping("/create")
     public ServiceResponse<DirectoryParam> createDirectory(@RequestBody DirectoryParam directory)
     {
-        System.out.println(directory);
         return directoryService.createDirectory(directory);
     }
 
