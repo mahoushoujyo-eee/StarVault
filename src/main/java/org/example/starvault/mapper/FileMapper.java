@@ -15,4 +15,6 @@ public interface FileMapper
     List<DirectoryAndFileParam> getFilesByDirectoryId(DirectoryParam directory);
 
     void deleteFile(File file);
+
+    List<Long> getFileIdsByDirectoryId(DirectoryParam directoryParam);
 }

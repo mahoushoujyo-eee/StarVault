@@ -27,4 +27,14 @@ public class File
 
    @Column(type = "BIGINT")
    private Long userId;
+
+   public File(Long id)
+   {
+      this.id = id;
+   }
+
+   public File()
+   {
+
+   }
 }

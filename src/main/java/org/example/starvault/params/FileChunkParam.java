@@ -26,4 +26,9 @@ public class FileChunkParam extends File
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
+
+    public FileChunkParam()
+    {
+
+    }
 }

@@ -22,4 +22,9 @@
         FROM file
         WHERE directory_id = #{parentId}
     </select>
+    <select id="getFileIdsByDirectoryId" resultType="java.lang.Long">
+        SELECT id
+        FROM file
+        WHERE directory_id = #{id}
+    </select>
 </mapper>

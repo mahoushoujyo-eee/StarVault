@@ -43,4 +43,14 @@
         WHERE user_id = #{userId}
         AND parent_id = -1
     </select>
+    <select id="getDirectoriesByDirectoryId" resultType="java.lang.Long">
+        SELECT id
+        FROM directory
+        WHERE parent_id = #{id}
+    </select>
+    <select id="getDirectoriesByParentId" resultType="java.lang.Long">
+        SELECT id
+        FROM directory
+        WHERE parent_id = #{parentId}
+    </select>
 </mapper>

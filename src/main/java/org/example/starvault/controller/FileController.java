@@ -59,4 +59,10 @@ public class FileController
     {
         return fileService.deleteFile(file);
     }
+
+    @PostMapping("/download")
+    public ServiceResponse<File> downloadFile(@RequestBody File file) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
+    {
+        return fileService.downloadFile(file);
+    }
 }

@@ -24,4 +24,8 @@ public interface DirectoryMapper
     void deleteDirectory(DirectoryParam directory);
 
     void renameDirectory(DirectoryParam directory);
+
+    List<Long> getDirectoriesByDirectoryId(DirectoryParam directory);
+
+    List<Long> getDirectoriesByParentId(DirectoryParam directoryParam);
 }

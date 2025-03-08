@@ -10,4 +10,9 @@ public class DirectoryParam
     private String parentName;
     private Long parentId;
     private Long userId;
+
+    public DirectoryParam(Long id)
+    {
+        this.parentId = id;
+    }
 }

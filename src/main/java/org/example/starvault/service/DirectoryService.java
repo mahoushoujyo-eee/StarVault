@@ -1,6 +1,8 @@
 package org.example.starvault.service;
 
+import io.minio.errors.*;
 import org.example.starvault.entities.Directory;
+import org.example.starvault.entities.File;
 import org.example.starvault.entities.User;
 import org.example.starvault.mapper.DirectoryMapper;
 import org.example.starvault.params.DirectoryAndFileParam;
@@ -10,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import stark.dataworks.boot.web.ServiceResponse;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -66,8 +71,15 @@ public class DirectoryService
     @Transactional(rollbackFor = Exception.class)
     public ServiceResponse<Boolean> deleteDirectory(DirectoryParam directory)
     {
-        directoryMapper.deleteDirectory(directory);
-        return ServiceResponse.buildSuccessResponse(true);
+        if (directoryMapper.ifContainsDirectory(directory))
+        {
+            deleteAllDirectory(directory.getId());
+            return ServiceResponse.buildSuccessResponse(true);
+        }
+        else
+        {
+            return ServiceResponse.buildErrorResponse(-100, "目录不存在");
+        }
     }
 
     public ServiceResponse<Boolean> renameDirectory(DirectoryParam directory)
@@ -87,5 +99,28 @@ public class DirectoryService
     {
         directoryMapper.getRootDirectory(userId);
         return ServiceResponse.buildSuccessResponse(directoryMapper.getRootDirectory(userId));
+    }
+
+    public void deleteAllDirectory(Long directoryId)
+    {
+        List<Long> directoryIds = directoryMapper.getDirectoriesByParentId(new DirectoryParam(directoryId));
+        fileService.getFileIdsByDirectoryId(new DirectoryParam(directoryId)).forEach(fileId ->
+        {
+            try
+            {
+                fileService.deleteFile(new File(fileId));
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e);
+            }
+        });
+
+        directoryMapper.deleteDirectory(new DirectoryParam(directoryId));
+
+        if(directoryIds.isEmpty())
+            return;
+
+        directoryIds.forEach(this::deleteAllDirectory);
     }
 }
