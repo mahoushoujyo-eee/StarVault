@@ -7,6 +7,13 @@
         <result property="parentId" column="parent_id"/>
         <result property="userId" column="user_id"/>
     </resultMap>
+
+    <resultMap id="directoryParamMap" type="org.example.starvault.params.DirectoryParam">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
     <insert id="createDirectory"  useGeneratedKeys="true" keyProperty="id">
         INSERT INTO directory
         (name, parent_id, user_id)
@@ -48,9 +55,9 @@
         FROM directory
         WHERE parent_id = #{id}
     </select>
-    <select id="getDirectoriesByParentId" resultType="java.lang.Long">
-        SELECT id
+    <select id="getDirectoriesByParentId" resultMap="directoryParamMap">
+        SELECT id, name, parent_id, user_id
         FROM directory
-        WHERE parent_id = #{parentId}
+        WHERE parent_id = #{id}
     </select>
 </mapper>

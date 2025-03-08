@@ -9,6 +9,14 @@
         <result property="userId" column="user_id"/>
     </resultMap>
 
+    <resultMap id="fileMap" type="org.example.starvault.entities.File">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="url" column="url"/>
+        <result property="directoryId" column="directory_id"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+
     <insert id="addFile" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO file (name, url,  user_id, directory_id)
         VALUES (#{name}, #{url}, #{userId}, #{directoryId})
@@ -17,13 +25,18 @@
         DELETE FROM file
         WHERE id = #{id}
     </delete>
-    <select id="getFilesByDirectoryId" resultMap="fileAndDirectoryMap">
+    <select id="getFileParamsByDirectoryId" resultMap="fileAndDirectoryMap">
         SELECT id, name, url, directory_id, user_id
         FROM file
         WHERE directory_id = #{parentId}
     </select>
     <select id="getFileIdsByDirectoryId" resultType="java.lang.Long">
         SELECT id
+        FROM file
+        WHERE directory_id = #{id}
+    </select>
+    <select id="getFilesByDirectoryId" resultMap="fileMap">
+        SELECT id, name, url, directory_id, user_id
         FROM file
         WHERE directory_id = #{id}
     </select>

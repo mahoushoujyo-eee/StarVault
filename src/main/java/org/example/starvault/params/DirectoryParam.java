@@ -1,6 +1,7 @@
 package org.example.starvault.params;
 
 import lombok.Data;
+import org.example.starvault.entities.Directory;
 
 @Data
 public class DirectoryParam
@@ -13,6 +14,11 @@ public class DirectoryParam
 
     public DirectoryParam(Long id)
     {
-        this.parentId = id;
+        this.id = id;
+    }
+
+    public DirectoryParam()
+    {
+
     }
 }

@@ -1,5 +1,8 @@
 package org.example.starvault;
 
+import org.example.starvault.params.DirectoryParam;
+import org.example.starvault.service.DirectoryService;
+import org.example.starvault.service.FileService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +15,10 @@ class StarVaultApplicationTests {
 
     @Autowired
     private RedisTemplate<String, List<String>> redisTemplate;
+    @Autowired
+    private DirectoryService directoryService;
+    @Autowired
+    private FileService fileService;
     @Test
     void contextLoads()
     {
@@ -21,6 +28,12 @@ class StarVaultApplicationTests {
         result.add("test2");
         redisTemplate.opsForValue().set("test", result);
         System.out.println(result);
+    }
+
+    @Test
+    void deleteAll()
+    {
+        directoryService.deleteAllDirectory(new DirectoryParam(9L));
     }
 
 }

@@ -67,7 +67,7 @@ public class FileService
 
     public List<DirectoryAndFileParam> getFiles(DirectoryParam directory)
     {
-        List<DirectoryAndFileParam> files = fileMapper.getFilesByDirectoryId(directory);
+        List<DirectoryAndFileParam> files = fileMapper.getFileParamsByDirectoryId(directory);
         return files;
     }
 
@@ -136,5 +136,10 @@ public class FileService
     public List<Long> getFileIdsByDirectoryId(DirectoryParam directoryParam)
     {
         return fileMapper.getFileIdsByDirectoryId(directoryParam);
+    }
+
+    public List<File> getFilesByDirectoryId(DirectoryParam directory)
+    {
+        return fileMapper.getFilesByDirectoryId(directory);
     }
 }

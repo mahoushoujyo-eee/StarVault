@@ -12,7 +12,9 @@ public interface FileMapper
 {
     void addFile(File file);
 
-    List<DirectoryAndFileParam> getFilesByDirectoryId(DirectoryParam directory);
+    List<DirectoryAndFileParam> getFileParamsByDirectoryId(DirectoryParam directory);
+
+    List<File> getFilesByDirectoryId(DirectoryParam directory);
 
     void deleteFile(File file);
 

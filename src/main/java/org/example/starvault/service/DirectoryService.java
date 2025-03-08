@@ -1,5 +1,6 @@
 package org.example.starvault.service;
 
+import ch.qos.logback.classic.encoder.JsonEncoder;
 import io.minio.errors.*;
 import org.example.starvault.entities.Directory;
 import org.example.starvault.entities.File;
@@ -10,6 +11,7 @@ import org.example.starvault.params.DirectoryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import stark.dataworks.boot.autoconfig.web.LogArgumentsResponseAdvice;
 import stark.dataworks.boot.web.ServiceResponse;
 
 import java.io.IOException;
@@ -25,6 +27,9 @@ public class DirectoryService
 
     @Autowired
     private FileService fileService;
+    @Autowired
+    private LogArgumentsResponseAdvice logArgumentsResponseAdvice;
+
     public ServiceResponse<DirectoryParam> createDirectory(DirectoryParam directory)
     {
         directoryMapper.createDirectory(directory);
@@ -73,7 +78,7 @@ public class DirectoryService
     {
         if (directoryMapper.ifContainsDirectory(directory))
         {
-            deleteAllDirectory(directory.getId());
+            deleteAllDirectory(directory);
             return ServiceResponse.buildSuccessResponse(true);
         }
         else
@@ -101,14 +106,15 @@ public class DirectoryService
         return ServiceResponse.buildSuccessResponse(directoryMapper.getRootDirectory(userId));
     }
 
-    public void deleteAllDirectory(Long directoryId)
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteAllDirectory(DirectoryParam directory)
     {
-        List<Long> directoryIds = directoryMapper.getDirectoriesByParentId(new DirectoryParam(directoryId));
-        fileService.getFileIdsByDirectoryId(new DirectoryParam(directoryId)).forEach(fileId ->
+        List<DirectoryParam> directories = directoryMapper.getDirectoriesByParentId(directory);
+        fileService.getFilesByDirectoryId(directory).forEach(file ->
         {
             try
             {
-                fileService.deleteFile(new File(fileId));
+                fileService.deleteFile(file);
             }
             catch (Exception e)
             {
@@ -116,11 +122,11 @@ public class DirectoryService
             }
         });
 
-        directoryMapper.deleteDirectory(new DirectoryParam(directoryId));
+        directoryMapper.deleteDirectory(directory);
 
-        if(directoryIds.isEmpty())
+        if(directories.isEmpty())
             return;
 
-        directoryIds.forEach(this::deleteAllDirectory);
+        directories.forEach(this::deleteAllDirectory);
     }
 }

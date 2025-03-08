@@ -27,5 +27,5 @@ public interface DirectoryMapper
 
     List<Long> getDirectoriesByDirectoryId(DirectoryParam directory);
 
-    List<Long> getDirectoriesByParentId(DirectoryParam directoryParam);
+    List<DirectoryParam> getDirectoriesByParentId(DirectoryParam directoryParam);
 }
