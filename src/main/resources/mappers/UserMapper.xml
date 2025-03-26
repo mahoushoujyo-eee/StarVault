@@ -19,6 +19,11 @@
         SET password = #{password}
         WHERE email = #{email}
     </update>
+    <update id="shiftUserBucket">
+        UPDATE user
+        SET bucket = #{bucket}
+        WHERE id = #{id}
+    </update>
 
     <select id="ifContainsEmail" resultType="boolean">
         SELECT COUNT(*)
@@ -30,6 +35,11 @@
         SELECT id, username, password
         FROM user
         WHERE email = #{email}
+    </select>
+    <select id="getBucketByUserId" resultType="java.lang.String">
+        SELECT bucket
+        FROM user
+        WHERE id = #{id}
     </select>
 
 

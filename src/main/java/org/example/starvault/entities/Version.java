@@ -25,4 +25,7 @@ public class Version
 
     @Column(type = "DATETIME")
     private Date date;
+
+    @Column(type = "VARCHAR(50)")
+    private String bucket;
 }

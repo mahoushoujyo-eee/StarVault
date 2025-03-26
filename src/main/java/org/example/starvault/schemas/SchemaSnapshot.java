@@ -50,6 +50,7 @@ public class SchemaSnapshot extends SchemaSnapshotBase {
             builder.column().name("password").type("VARCHAR(100)").nullable(true).unique(false);
             builder.column().name("email").type("VARCHAR(50)").nullable(true).unique(false);
             builder.column().name("avatar").type("VARCHAR(1000)").nullable(true).unique(false);
+            builder.column().name("bucket").type("VARCHAR(50)").nullable(true).unique(false);
             builder.primaryKey().columnName("id");
             builder.engine("InnoDB");
         });
@@ -58,6 +59,7 @@ public class SchemaSnapshot extends SchemaSnapshotBase {
             builder.column().name("name").type("VARCHAR(50)").nullable(true).unique(false);
             builder.column().name("user_id").type("BIGINT").nullable(true).unique(false);
             builder.column().name("date").type("DATETIME").nullable(true).unique(false);
+            builder.column().name("bucket").type("VARCHAR(50)").nullable(true).unique(false);
             builder.primaryKey().columnName("id");
             builder.engine("InnoDB");
         });

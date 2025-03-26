@@ -9,6 +9,7 @@ import org.example.starvault.params.DirectoryAndFileParam;
 import org.example.starvault.params.DirectoryParam;
 import org.example.starvault.params.FileChunkParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +38,9 @@ public class FileService
 
     @Autowired
     private RedisTemplate<String, List<String>> redisTemplate;
+    @Autowired
+    @Lazy
+    private UserService userService;
 
     public ServiceResponse<File> addFile(MultipartFile file, Long userId, Long parentId) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
     {
@@ -46,7 +50,7 @@ public class FileService
         fileObj.setDirectoryId(parentId);
         fileMapper.addFile(fileObj);
 
-        fileObj.setUrl(easyMinio.uploadFileByStream("user-file" + userId, file.getOriginalFilename() + " " + fileObj.getId(), file.getInputStream()));
+        fileObj.setUrl(easyMinio.uploadFileByStream(userService.getUserBucketName(userId), file.getOriginalFilename() + " " + fileObj.getId(), file.getInputStream()));
 
         return ServiceResponse.buildSuccessResponse(fileObj);
     }
@@ -57,10 +61,10 @@ public class FileService
         fileObj.setName(fileName + "_" + chunkIndex);
         fileObj.setUserId(userId);
         fileObj.setDirectoryId(parentId);
-        fileObj.setUrl(easyMinio.uploadFileByStream("user-file" + userId, fileObj.getName(), file.getInputStream()));
+        fileObj.setUrl(easyMinio.uploadFileByStream(userService.getUserBucketName(userId), fileObj.getName(), file.getInputStream()));
         List<String> fileNameList = redisTemplate.opsForValue().get(taskId);
         fileNameList.add(fileObj.getName());
-        redisTemplate.opsForValue().set(taskId, fileNameList);
+        redisTemplate.opsForValue().set(taskId, fileNameList, 10, TimeUnit.MINUTES);
 
         return ServiceResponse.buildSuccessResponse(fileObj);
     }
@@ -73,7 +77,7 @@ public class FileService
 
     public ServiceResponse<Boolean> deleteFile(File file) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
     {
-        String bucketName = "user-file" + file.getUserId();
+        String bucketName = userService.getUserBucketName(file.getUserId());
         String objectName = file.getName() + " " + file.getId();
         easyMinio.deleteObjects(bucketName, java.util.Arrays.asList(objectName));
         fileMapper.deleteFile(file);
@@ -91,13 +95,15 @@ public class FileService
         fileObj.setDirectoryId(file.getDirectoryId());
         fileMapper.addFile(fileObj);
 
-        easyMinio.composeObjects("user-file" + fileObj.getUserId(), fileObj.getName() + " " + fileObj.getId(), objectNames);
-        fileObj.setUrl(easyMinio.getObjectUrl("user-file" + fileObj.getUserId(), fileObj.getName() + " " + fileObj.getId()));
+        String bucketName = userService.getUserBucketName(file.getUserId());
+
+        easyMinio.composeObjects(bucketName, fileObj.getName() + " " + fileObj.getId(), objectNames);
+        fileObj.setUrl(easyMinio.getObjectUrl(bucketName, fileObj.getName() + " " + fileObj.getId()));
         new Thread(() ->
         {
             try
             {
-                easyMinio.deleteObjects("user-file" + fileObj.getUserId(), objectNames);
+                easyMinio.deleteObjects(bucketName, objectNames);
             }
             catch (Exception e)
             {
@@ -110,7 +116,7 @@ public class FileService
     public ServiceResponse<String> uploadFileChunksStart(File file)
     {
         String taskId = file.getName() + ' ' + file.getUserId() + ' ' + System.currentTimeMillis();
-        redisTemplate.opsForValue().set(taskId, java.util.Arrays.asList());
+        redisTemplate.opsForValue().set(taskId, java.util.Arrays.asList(), 10, TimeUnit.MINUTES);
         return ServiceResponse.buildSuccessResponse(taskId);
     }
 
@@ -118,7 +124,7 @@ public class FileService
     {
         String fileName = file.getName();
         String contentDisposition = "attachment; filename=\"" + URLEncoder.encode(fileName,  StandardCharsets.UTF_8).replace("+", "%20") + "\"";
-        String bucketName = "user-file" + file.getUserId();
+        String bucketName = userService.getUserBucketName(file.getUserId());
 
         String preSignedUrl = easyMinio.getMinioClient().getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()

@@ -26,4 +26,7 @@ public class User
 
     @Column(type = "VARCHAR(1000)")
     private String avatar;
+
+    @Column(type = "VARCHAR(50)")
+    private String bucket;
 }

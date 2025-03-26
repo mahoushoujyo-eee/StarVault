@@ -2,6 +2,7 @@ package org.example.starvault.service;
 
 import io.minio.errors.*;
 import org.example.starvault.entities.User;
+import org.example.starvault.entities.Version;
 import org.example.starvault.mapper.UserMapper;
 import org.example.starvault.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,5 +79,15 @@ public class UserService
             response.setMessage("密码重置成功！");
             return response;
         }
+    }
+
+    public String getUserBucketName(Long userId)
+    {
+        return  userMapper.getBucketByUserId(userId);
+    }
+
+    public void shiftUserBucket(Version version)
+    {
+        userMapper.shiftUserBucket(version);
     }
 }
